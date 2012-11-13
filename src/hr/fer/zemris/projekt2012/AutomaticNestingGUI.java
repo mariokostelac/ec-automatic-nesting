@@ -3,41 +3,37 @@ package hr.fer.zemris.projekt2012;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.Font;
 import java.awt.Polygon;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
 
 import hr.fer.zemris.projekt2012.polygon.VisualizePolygons;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 public class AutomaticNestingGUI extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private VisualizePolygons polygonDrawer;
-	
+
+	private int width;
+	private int height;
+
 	public AutomaticNestingGUI() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
@@ -47,32 +43,29 @@ public class AutomaticNestingGUI extends JFrame {
 		setLocation(0, 0);
 		setSize(800, 600);
 		setTitle("Automatic nesting GUI v0.1");
-
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		/*
+		 * try {
+		 * UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		 * } catch (Exception e) { e.printStackTrace(); }
+		 */
 		initGUI();
 	}
 
 	public void drawPolygons(List<Polygon> polygons) {
 		this.polygonDrawer.setPolygons(polygons);
 	}
-	
+
 	public void initGUI() {
 		polygonDrawer = new VisualizePolygons();
 
-		JPanel leftComponents = new JPanel();
+		final JPanel leftComponents = new JPanel();
 		leftComponents.setLayout(new BoxLayout(leftComponents,
 				BoxLayout.PAGE_AXIS));
 
-		leftComponents.setPreferredSize(new Dimension(200, 600));
-
-		JButton parseButton = new JButton();
-		parseButton.setSize(new Dimension(200, 100));
-		parseButton.setMaximumSize(new Dimension(200, 100));
+		final JButton parseButton = new JButton();
 		parseButton.setAction(new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -93,7 +86,64 @@ public class AutomaticNestingGUI extends JFrame {
 
 		polygonDrawer.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
+		final JLabel widthLabel = new JLabel("Set width (algorithm parameter)");
+		final JTextField widthEntry = new JTextField();
+		widthEntry.setHorizontalAlignment(JTextField.RIGHT);
+
+		JButton widthSet = new JButton();
+		widthSet.setAction(new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					AutomaticNestingGUI.this.width = Integer
+							.parseInt(widthEntry.getText());
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(AutomaticNestingGUI.this,
+							"Width must be an integer!");
+				}
+				;
+			}
+		});
+		widthSet.setText("SET");
+
+		final JButton algorithmStart = new JButton();
+		algorithmStart.setAction(new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO : Pokretanje algoritma za nesting
+			}
+		});
+		algorithmStart.setText("START");
+
 		leftComponents.add(parseButton);
+		leftComponents.add(Box.createRigidArea(new Dimension(0, 50)));
+		leftComponents.add(widthLabel);
+		leftComponents.add(widthEntry);
+		leftComponents.add(widthSet);
+		leftComponents.add(Box.createRigidArea(new Dimension(0, 50)));
+		leftComponents.add(algorithmStart);
+
+		Font usedFont = new Font(widthLabel.getFont().getName(), widthLabel
+				.getFont().getStyle(), 15);
+		widthLabel.setFont(usedFont);
+		parseButton.setFont(usedFont);
+		widthEntry.setFont(usedFont);
+		widthSet.setFont(usedFont);
+		algorithmStart.setFont(usedFont);
+
+		parseButton.setMaximumSize(new Dimension(300, 90));
+		widthEntry.setMaximumSize(new Dimension(300, 30));
+		leftComponents.setMaximumSize(new Dimension(300, 600));
+		widthSet.setMaximumSize(new Dimension(150, 30));
+		algorithmStart.setMaximumSize(new Dimension(200, 80));
+
+		algorithmStart.setBackground(Color.GREEN);
 
 		this.getContentPane().add(leftComponents);
 		this.getContentPane().add(polygonDrawer);

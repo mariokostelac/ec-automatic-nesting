@@ -1,13 +1,14 @@
 package hr.fer.zemris.projekt2012.polygon;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.io.File;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,9 +20,20 @@ public class VisualizePolygons extends JPanel {
 
 	private List<Polygon> polygons = new LinkedList<>();
 
+	private float xScale = 1;
+	private float yScale = 1;
+	
+	public void setScaleX(float xScale) {
+		this.xScale = xScale;
+	}
+	
+	public void setScaleY(float yScale) {
+		this.yScale = yScale;
+	}
+	
 	public void parsePolysFromFile(Path path) {
 		this.polygons = new LinkedList<>();
-		
+
 		try {
 			byte[] data = Files.readAllBytes(path);
 			String stringData = new String(data, Charset.forName("UTF-8"));
@@ -48,7 +60,7 @@ public class VisualizePolygons extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.paintComponent(getGraphics());
 	}
 
@@ -56,7 +68,7 @@ public class VisualizePolygons extends JPanel {
 		this.polygons = new LinkedList<>();
 		for (Polygon poly : list) {
 			polygons.add(poly);
-			 
+
 		}
 		this.paintComponent(getGraphics());
 	}
@@ -64,10 +76,16 @@ public class VisualizePolygons extends JPanel {
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
-
+		
+		Graphics2D g2d = (Graphics2D) g; 
+		
 		for (Polygon p : polygons) {
+			AffineTransform scaleMatrix = new AffineTransform();
+			scaleMatrix.scale(this.xScale, this.yScale);
+			
+			Shape p2 = scaleMatrix.createTransformedShape(p);
 
-			g.drawPolygon(p);
+			g2d.draw(p2);
 		}
 
 	}
