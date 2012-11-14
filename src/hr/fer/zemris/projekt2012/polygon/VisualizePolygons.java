@@ -30,45 +30,11 @@ public class VisualizePolygons extends JPanel {
 	public void setScaleY(float yScale) {
 		this.yScale = yScale;
 	}
-	
-	public void parsePolysFromFile(Path path) {
-		this.polygons = new LinkedList<>();
-
-		try {
-			byte[] data = Files.readAllBytes(path);
-			String stringData = new String(data, Charset.forName("UTF-8"));
-
-			String[] polygonDefinitions = stringData.split("#");
-
-			for (int i = 0; i < polygonDefinitions.length; ++i) {
-				String[] currentPolyPoints = polygonDefinitions[i].split(";");
-
-				Polygon currentPoly = new Polygon();
-				for (int j = 0; j < currentPolyPoints.length; ++j) {
-
-					String[] coords = currentPolyPoints[j]
-							.replaceAll("\\(", "").replaceAll("\\)", "")
-							.split(",");
-
-					currentPoly.addPoint(Integer.parseInt(coords[0]),
-							Integer.parseInt(coords[1]));
-				}
-
-				polygons.add(currentPoly);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		this.paintComponent(getGraphics());
-	}
 
 	public void setPolygons(List<Polygon> list) {
 		this.polygons = new LinkedList<>();
 		for (Polygon poly : list) {
 			polygons.add(poly);
-
 		}
 		this.paintComponent(getGraphics());
 	}

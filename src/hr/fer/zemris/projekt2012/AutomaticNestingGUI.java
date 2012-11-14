@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import hr.fer.zemris.projekt2012.parsers.PolyFileParser;
 import hr.fer.zemris.projekt2012.polygon.VisualizePolygons;
 
 import javax.swing.AbstractAction;
@@ -76,9 +77,8 @@ public class AutomaticNestingGUI extends JFrame {
 					return;
 
 				File fileName = fc.getSelectedFile();
-				Path filePath = fileName.toPath();
 
-				polygonDrawer.parsePolysFromFile(filePath);
+				polygonDrawer.setPolygons(PolyFileParser.getPolygonsFromFile(fileName));
 			}
 		});
 

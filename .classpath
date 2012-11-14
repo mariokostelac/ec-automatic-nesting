@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="ECFJ.jar"/>
+	<classpathentry kind="lib" path="lib/daemon.jar"/>
+	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/loader1.jar"/>
+	<classpathentry kind="lib" path="lib/loader2.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.11.jar"/>
+	<classpathentry kind="lib" path="lib/mpi.jar"/>
+	<classpathentry kind="lib" path="lib/mpiExp.jar"/>
+	<classpathentry kind="lib" path="lib/mpj.jar"/>
+	<classpathentry kind="lib" path="lib/mpjbuf.jar"/>
+	<classpathentry kind="lib" path="lib/mpjdev.jar"/>
+	<classpathentry kind="lib" path="lib/mxdev.jar"/>
+	<classpathentry kind="lib" path="lib/niodev.jar"/>
+	<classpathentry kind="lib" path="lib/smpdev.jar"/>
+	<classpathentry kind="lib" path="lib/starter.jar"/>
+	<classpathentry kind="lib" path="lib/test.jar"/>
+	<classpathentry kind="lib" path="lib/tools.jar"/>
+	<classpathentry kind="lib" path="lib/wrapper.jar"/>
+	<classpathentry kind="lib" path="lib/xdev.jar"/>
+	<classpathentry kind="lib" path="lib/xerces/resolver.jar"/>
+	<classpathentry kind="lib" path="lib/xerces/serializer.jar"/>
+	<classpathentry kind="lib" path="lib/xerces/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/xerces/xercesSamples.jar"/>
+	<classpathentry kind="lib" path="lib/xerces/xml-apis.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

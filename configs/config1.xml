@@ -1,0 +1,26 @@
+<ECF>
+	<Algorithm>	<!-- moze biti samo jedan, ali ovdje su navedeni svi postojeci -->
+        <SteadyStateTournament>
+			<Entry key="tsize">3</Entry> <!-- tournament size -->
+		</SteadyStateTournament>
+	</Algorithm>
+	<Registry>
+		<Entry key="randomizer.seed">0</Entry> <!-- 0 uses time(NULL) (default: 0) -->
+		<Entry key="population.size">100</Entry> <!-- number of individuals (default: 100) -->
+		<Entry key="population.demes">1</Entry> <!-- number of demes (default:1)-->
+		<Entry key="migration.freq">0</Entry> <!-- individuals are exchanged each 'freq' generations (default: none) -->
+		<Entry key="migration.number">2</Entry> <!-- number of individuals to be sent to another deme (default: 1) -->
+		<Entry key="mutation.indprob">0.3</Entry> <!-- individual mutation probability (regardless of the algorithm!) (default: 0.3) -->
+		<Entry key="mutation.genotypes">all</Entry> <!-- if there are multiple genotypes, which to mutate? 'random': a random one, all: mutate all (default: random) -->
+		<Entry key="crossover.genotypes">all</Entry> <!-- if there are multiple genotypes, which to cross? 'random': a random pair, 'all': all pairs (default: random) -->
+		<Entry key="term.maxgen">10000</Entry> <!-- max number of generations (default: none) -->
+		<Entry key="term.maxtime">10000</Entry> <!-- max number of seconds to run (default: none) -->
+		<Entry key="term.stagnation">100</Entry><!-- max number of consecutive generations without improvement (default: 5000 / pop_size) -->
+		<Entry key="log.level">1</Entry> <!-- log level; valid values are 1 (minimal) to 5 (verbose) (default: 3) -->
+		<Entry key="log.filename">log.txt</Entry> <!-- log filename (default: none) -->
+		<Entry key="log.frequency">1</Entry> <!-- log only every 'frequency' generations (default: 1) -->
+		<Entry key="milestone.filename">out.txt</Entry> <!-- milestone file (if stated) stores all the population (default: none) -->
+		<Entry key="milestone.interval">0</Entry> <!-- milestone saving interval in generations; 0: save only at the end (default: 0) -->
+	</Registry>
+</ECF>
+
