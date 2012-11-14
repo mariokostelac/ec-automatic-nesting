@@ -31,8 +31,9 @@ public class AutomaticNestingGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private VisualizePolygons polygonDrawer;
+	private List<Polygon> polygons = null;
 
-	private int width;
+	private int width = 400;
 	private int height;
 
 	public AutomaticNestingGUI() {
@@ -78,16 +79,18 @@ public class AutomaticNestingGUI extends JFrame {
 
 				File fileName = fc.getSelectedFile();
 
-				polygonDrawer.setPolygons(PolyFileParser.getPolygonsFromFile(fileName));
+				polygons = PolyFileParser.getPolygonsFromFile(fileName);
+				polygonDrawer.setPolygons(polygons);
 			}
 		});
 
 		parseButton.setText("Parse polygons from text file");
 
 		polygonDrawer.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		polygonDrawer.setBackground(new Color(255, 255, 255));
 
 		final JLabel widthLabel = new JLabel("Set width (algorithm parameter)");
-		final JTextField widthEntry = new JTextField();
+		final JTextField widthEntry = new JTextField(Integer.toString(width));
 		widthEntry.setHorizontalAlignment(JTextField.RIGHT);
 
 		JButton widthSet = new JButton();
@@ -104,7 +107,6 @@ public class AutomaticNestingGUI extends JFrame {
 					JOptionPane.showMessageDialog(AutomaticNestingGUI.this,
 							"Width must be an integer!");
 				}
-				;
 			}
 		});
 		widthSet.setText("SET");
@@ -116,8 +118,19 @@ public class AutomaticNestingGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO : Pokretanje algoritma za nesting
+				
+				if (polygons == null) {
+					JOptionPane.showMessageDialog(null, "Prvo učitaj datoteku poligona.");					
+					return;
+				}
+				
+				AutomaticNestingCalc test = new AutomaticNestingCalc(polygons, width);
+				test.run();
+				
+				drawPolygons( test.getBestSolution() );
+								
 			}
+			
 		});
 		algorithmStart.setText("START");
 
@@ -151,7 +164,6 @@ public class AutomaticNestingGUI extends JFrame {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
-
 			@Override
 			public void run() {
 				new AutomaticNestingGUI().setVisible(true);

@@ -1,13 +1,13 @@
 package hr.fer.zemris.projekt2012;
 
-import hr.fer.zemris.projekt2012.parsers.PolyFileParser;
-
 import java.awt.Polygon;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import ecf.Deme;
+import ecf.Individual;
 import ecf.State;
 import ecf.fitness.Fitness;
 import ecf.fitness.FitnessMin;
@@ -27,24 +27,52 @@ public class AutomaticNestingCalc implements IEvaluate {
 	private State state = null;
 	private Genotype genotype = null;
 	
-	/*public static void main(String[] args) {
-		
-		List<Polygon> polygons = PolyFileParser.getPolygonsFromFile(new File("polysets/set1.txt"));
-		
-		AutomaticNestingCalc test = new AutomaticNestingCalc(polygons, 400);
-		test.run();
-		
-		return;
-		
-	}*/
-	
 	public AutomaticNestingCalc(List<Polygon> polygons, int width) {
 		this.polygons = polygons;
 		this.width = width;
 	}
 	
-	private Genotype getGenotype() {
+	/**
+	 * Pokreće računanje
+	 */
+	public void run() {
+		String[] args = new String[]{ "configs/config1.xml" };
+		state = new State(this);
+        
+		setGenotype();
+		setMutation();
+		setCrossover();
 		
+		state.initialize(args);
+		state.run();
+    }
+	
+	public List<Polygon> getBestSolution() {
+		
+		List<Polygon> translatedPolygons = new ArrayList<>();
+		
+		Deme currPopulation = state.getPopulation().getLocalDeme();
+		Individual bestSolution = null;
+		for (Individual currSolution : currPopulation) {
+			if (bestSolution == null || currSolution.getFitness().getValue() < bestSolution.getFitness().getValue())
+				bestSolution = currSolution;
+		}
+		
+		Set<Event> openEvents = getOpenEvents((Permutation) bestSolution.get(0));
+		int i = 0;
+		for (Event currEvent : openEvents) {
+			i++;
+			if (i == 1) continue;
+			Polygon translatedPoly = new Polygon(currEvent.poly.xpoints, currEvent.poly.ypoints, currEvent.poly.npoints);
+			translatedPoly.translate(currEvent.x, currEvent.y);
+			translatedPolygons.add(translatedPoly);
+			System.out.println(currEvent.x + " " + currEvent.y);
+		}
+		
+		return translatedPolygons;
+	}
+	
+	private Genotype getGenotype() {
 		if (genotype == null)
 			genotype = new Permutation(state, polygons.size());
 		return genotype;	
@@ -107,9 +135,11 @@ public class AutomaticNestingCalc implements IEvaluate {
 						zerosInRow = 0;
 					if (zerosInRow == polyWidth) {
 						// nasli smo najbolje bottom-left mjesto, smjesti ga i izadji van
+						int x = i-zerosInRow+1;
+						int y = currEvent.y-polyHeight;
 						Event startEvent = new Event(
-								i-zerosInRow+1,
-								currEvent.y-polyHeight,
+								x,
+								y,
 								Event.eventType.OPEN,
 								newPoly
 						);
@@ -124,40 +154,31 @@ public class AutomaticNestingCalc implements IEvaluate {
 		}
 		
 	}
-	
-	/**
-	 * Pokreće računanje
-	 */
-	public void run() {
-		String[] args = new String[]{ "configs/config1.xml" };
-		state = new State(this);
-        
-		setGenotype();
-		setMutation();
-		setCrossover();
-		
-		state.initialize(args);
-		state.run();
-    }
 
 	@Override
 	public void evaluate(Fitness fitness) {
 		
         Permutation solution = (Permutation) fitness.getIndividual().get(0);
 
-        Set<Event> staticEvents = new TreeSet<Event>();
+        int topY = 0;
+        for (Event currEvent : getOpenEvents(solution))
+        	topY = Math.max(topY, currEvent.y+currEvent.poly.getBounds().height);
+                
+		fitness.setValue(topY);
+		
+	}
+	
+	private Set<Event> getOpenEvents(Permutation solution) {
+		
+		Set<Event> staticEvents = new TreeSet<Event>();
         // osiguraj da stvar funkcionira od početka
         // dodaje se poligon koji se raširi od početka do kraja i zatvoren je točno na nuli (tako da se pozove stavljanje novog poligona)
         staticEvents.add(new Event(0, 0, Event.eventType.OPEN, new Polygon(new int[]{0, 400}, new int[]{0, 0}, 2)));
         for (int polyIndex : solution.getVariables())
         	placePolygon(staticEvents, polyIndex);
-        
-        int topY = 0;
-        for (Event currEvent : staticEvents)
-        	topY = Math.max(topY, currEvent.y+currEvent.poly.getBounds().height);
-                
-		fitness.setValue(topY);
 		
+        return staticEvents;
+        
 	}
 
 	@Override
@@ -170,6 +191,23 @@ public class AutomaticNestingCalc implements IEvaluate {
 
 	@Override
 	public void initialize() {}
+	
+	private int[] getPolygonPositions(Fitness fitness) {
+		
+		Permutation solution = (Permutation) fitness.getIndividual().get(0);
+		
+		int positions[] = new int[solution.getSize()*2];
+
+        Set<Event> staticEvents = new TreeSet<Event>();
+        // osiguraj da stvar funkcionira od početka
+        // dodaje se poligon koji se raširi od početka do kraja i zatvoren je točno na nuli (tako da se pozove stavljanje novog poligona)
+        staticEvents.add(new Event(0, 0, Event.eventType.OPEN, new Polygon(new int[]{0, 400}, new int[]{0, 0}, 2)));
+        for (int polyIndex : solution.getVariables())
+        	placePolygon(staticEvents, polyIndex);
+        
+        return positions;
+                		
+	}
 	
 	private static class Event implements Comparable<Event> {
 		

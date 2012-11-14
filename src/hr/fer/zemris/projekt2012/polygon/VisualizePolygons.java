@@ -1,5 +1,6 @@
 package hr.fer.zemris.projekt2012.polygon;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -45,14 +46,19 @@ public class VisualizePolygons extends JPanel {
 		
 		Graphics2D g2d = (Graphics2D) g; 
 		
+		Color outline = new Color(200, 10, 10);
+		Color inline = new Color(50, 50, 50);
+		
 		for (Polygon p : polygons) {
 			AffineTransform scaleMatrix = new AffineTransform();
 			scaleMatrix.scale(this.xScale, this.yScale);
 			
 			Shape p2 = scaleMatrix.createTransformedShape(p);
-
+			g2d.setColor(inline);
 			g2d.draw(p2);
-		}
+			g2d.setColor(outline);
+			g2d.draw(p2.getBounds());
+		}		
 
 	}
 
