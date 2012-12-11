@@ -70,6 +70,7 @@ public class AutomaticNestingCalc implements IEvaluate {
 		}
 		
 		return translatedPolygons;
+		
 	}
 	
 	private Genotype getGenotype() {
@@ -191,24 +192,7 @@ public class AutomaticNestingCalc implements IEvaluate {
 
 	@Override
 	public void initialize() {}
-	
-	private int[] getPolygonPositions(Fitness fitness) {
 		
-		Permutation solution = (Permutation) fitness.getIndividual().get(0);
-		
-		int positions[] = new int[solution.getSize()*2];
-
-        Set<Event> staticEvents = new TreeSet<Event>();
-        // osiguraj da stvar funkcionira od početka
-        // dodaje se poligon koji se raširi od početka do kraja i zatvoren je točno na nuli (tako da se pozove stavljanje novog poligona)
-        staticEvents.add(new Event(0, 0, Event.eventType.OPEN, new Polygon(new int[]{0, 400}, new int[]{0, 0}, 2)));
-        for (int polyIndex : solution.getVariables())
-        	placePolygon(staticEvents, polyIndex);
-        
-        return positions;
-                		
-	}
-	
 	private static class Event implements Comparable<Event> {
 		
 		public static enum eventType {OPEN, CLOSE};

@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 
 import hr.fer.zemris.projekt2012.parsers.PolyFileParser;
@@ -34,7 +33,11 @@ public class AutomaticNestingGUI extends JFrame {
 	private List<Polygon> polygons = null;
 
 	private int width = 400;
-	private int height;
+	//private int height;
+	
+	final JButton algorithmStart = new JButton("Start");
+	
+	private Thread calculatingThread = new Thread();
 
 	public AutomaticNestingGUI() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -45,11 +48,10 @@ public class AutomaticNestingGUI extends JFrame {
 		setLocation(0, 0);
 		setSize(800, 600);
 		setTitle("Automatic nesting GUI v0.1");
-		/*
-		 * try {
-		 * UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		 * } catch (Exception e) { e.printStackTrace(); }
-		 */
+		
+		/*try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (Exception e) { e.printStackTrace(); } /**/
 		initGUI();
 	}
 
@@ -111,7 +113,6 @@ public class AutomaticNestingGUI extends JFrame {
 		});
 		widthSet.setText("SET");
 
-		final JButton algorithmStart = new JButton();
 		algorithmStart.setAction(new AbstractAction() {
 
 			private static final long serialVersionUID = 1L;
@@ -124,10 +125,18 @@ public class AutomaticNestingGUI extends JFrame {
 					return;
 				}
 				
-				AutomaticNestingCalc test = new AutomaticNestingCalc(polygons, width);
-				test.run();
-				
-				drawPolygons( test.getBestSolution() );
+				calculatingThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						algorithmStart.setEnabled(false);
+						AutomaticNestingCalc test = new AutomaticNestingCalc(polygons, width);
+						test.run();
+						
+						drawPolygons( test.getBestSolution() );
+						algorithmStart.setEnabled(true);
+					}
+				});
+				calculatingThread.start();
 								
 			}
 			
