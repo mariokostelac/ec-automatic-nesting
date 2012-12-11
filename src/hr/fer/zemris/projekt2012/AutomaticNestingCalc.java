@@ -19,7 +19,7 @@ import ecf.genotype.permutation.Permutation;
 import ecf.genotype.permutation.PermutationCrxPMX;
 import ecf.genotype.permutation.PermutationMutInv;
 
-public class AutomaticNestingCalc implements IEvaluate {
+public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
 
 	private List<Polygon> polygons;
 	private int width = 0;
