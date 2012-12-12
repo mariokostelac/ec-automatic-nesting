@@ -2,6 +2,7 @@ package hr.fer.zemris.projekt2012.polygon;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +16,16 @@ import java.util.Random;
 public class PolygonGenerator {
 	private static Integer lower = 20;
 	private static Integer upper = 200;
+	private static Integer maxBrStr = 10;
 	
+	/**
+	 * Metoda postavlja maksimalni broj stranica u nasumično generiranom poligonu.
+	 * Uobičajena vrijednost je 10.
+	 */
+	public static void setMaxBrStr(Integer maxBrStr) {
+		PolygonGenerator.maxBrStr = maxBrStr;
+	}
+
 	/**
 	 * Postavlja donju granicu za raspon slučajnih brojeva.
 	 */
@@ -35,7 +45,7 @@ public class PolygonGenerator {
 	 * @param sideNumber Broj stranica poligona
 	 * @return Nasumični poligon.
 	 */
-	public static Polygon generate(int sideNumber) {
+	public static PolygonRandom generate(int sideNumber) {
 		Polygon a = new Polygon();
 		Random b = new Random();
 		int duljinaStr = b.nextInt(upper - lower) + lower;
@@ -53,7 +63,10 @@ public class PolygonGenerator {
 			a.addPoint(x.x, x.y);
 		}
 		Polygon c = new Polygon();
-		int duljinaCentar = (int)(duljinaStr / (2 * Math.sin(centralAngle/2)));
+		double duljinaC = duljinaStr / (2 * Math.sin(centralAngle/2));
+		int duljinaCentar = (int)(duljinaC);
+		Point center = new Point((int)(duljinaC * Math.cos((Math.PI - centralAngle)/2)), 
+				(int)(duljinaC * Math.sin((Math.PI - centralAngle)/2)));
 //		System.out.println(duljinaCentar);
 		angle = (Math.PI - centralAngle) / 2;
 //		System.out.println(angle);
@@ -75,19 +88,22 @@ public class PolygonGenerator {
 			c.addPoint(a.xpoints[i] + x.x + transVector.x, a.ypoints[i] + x.y + transVector.y);
 			angle += centralAngle;
 		}
-		return c;
+		PolygonRandom d = new PolygonRandom(c, center);
+		Rectangle w = d.getBounds();
+		d.translate(-w.x, -w.y);
+		return d;
 	}
 	
 	/**
-	 * Generira num nasumičnih poligona sa brojem stranica od 3 do 20.
+	 * Generira num nasumičnih poligona sa brojem stranica od 3 do maxBrStr.
 	 * @param num Broj željenih nasumičnih poligona.
 	 * @return Lista nasumičnih poligona.
 	 */
-	public static List<Polygon> generateMany(int num) {
-		List<Polygon> lista = new ArrayList<>(num);
+	public static List<PolygonRandom> generateMany(int num) {
+		List<PolygonRandom> lista = new ArrayList<>(num);
 		Random b = new Random();
 		for(int i = 0; i < num; i++) {
-			lista.add(generate(b.nextInt(20 - 3 + 1) + 3));
+			lista.add(generate(b.nextInt(maxBrStr - 3 + 1) + 3));
 		}
 		return lista;
 	}
@@ -96,9 +112,9 @@ public class PolygonGenerator {
 	 * Generira jedan poligon s nasumičnim brojem stranica.
 	 * @return Nasumični poligon.
 	 */
-	public static Polygon generate() {
+	public static PolygonRandom generate() {
 		Random b = new Random();
-		return generate(b.nextInt(20 - 3 + 1) + 3);
+		return generate(b.nextInt(maxBrStr - 3 + 1) + 3);
 	}
 	
 	public static void main(String args[]) {
