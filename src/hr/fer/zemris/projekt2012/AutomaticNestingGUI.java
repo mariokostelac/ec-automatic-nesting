@@ -180,7 +180,7 @@ public class AutomaticNestingGUI extends JFrame {
 					@Override
 					public void run() {
 						algorithmStart.setEnabled(false);
-						AutomaticNestingCalc test = new AutomaticNestingCalc(polygons, width);
+						BottomLeftAlgorithm test = new BottomLeftAlgorithm(polygons, width);
 						test.run();
 						
 						drawPolygons( test.getBestSolution() );

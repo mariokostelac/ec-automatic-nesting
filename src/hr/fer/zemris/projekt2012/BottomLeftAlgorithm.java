@@ -19,7 +19,7 @@ import ecf.genotype.permutation.Permutation;
 import ecf.genotype.permutation.PermutationCrxPMX;
 import ecf.genotype.permutation.PermutationMutInv;
 
-public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
+public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 
 	private List<Polygon> polygons;
 	private int width = 0;
@@ -27,7 +27,7 @@ public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
 	private State state = null;
 	private Genotype genotype = null;
 	
-	public AutomaticNestingCalc(List<Polygon> polygons, int width) {
+	public BottomLeftAlgorithm(List<Polygon> polygons, int width) {
 		this.polygons = polygons;
 		this.width = width;
 	}
