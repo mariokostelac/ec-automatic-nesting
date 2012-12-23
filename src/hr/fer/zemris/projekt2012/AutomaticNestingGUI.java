@@ -8,7 +8,18 @@ import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import hr.fer.zemris.projekt2012.parsers.PolyFileParser;
@@ -28,6 +39,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
 public class AutomaticNestingGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -38,6 +56,33 @@ public class AutomaticNestingGUI extends JFrame {
 	 * area with, should be changed through setWidth method
 	 */
 	private int width = 400;
+	
+	/**
+	 * Polygons file
+	 */
+	private Path polygonsPath = null;
+	
+	/**
+	 * Settings file path
+	 */
+	private Path settingsPath = Paths.get("settings.json");
+	
+	/**
+	 * JSON Serializer
+	 */
+	private JsonSerializer<AutomaticNestingGUI> settingsSeriazlier = new JsonSerializer<AutomaticNestingGUI>() {
+		@Override
+		public JsonElement serialize(AutomaticNestingGUI src,
+				java.lang.reflect.Type typeOfSrc,
+				JsonSerializationContext context) {
+			
+			JsonObject jObj = new JsonObject();
+			jObj.addProperty("width", src.width);
+			if (polygonsPath != null)
+				jObj.addProperty("polygonsPath", polygonsPath.toString());
+			return jObj;
+		}
+	};
 	
 	final JButton algorithmStart = new JButton("Start");
 	final JTextField widthEntry = new JTextField(0);
@@ -89,10 +134,8 @@ public class AutomaticNestingGUI extends JFrame {
 				if (fc.showOpenDialog(AutomaticNestingGUI.this) != JFileChooser.APPROVE_OPTION)
 					return;
 
-				File fileName = fc.getSelectedFile();
-
-				polygons = PolyFileParser.getPolygonsFromFile(fileName);
-				polygonDrawer.setPolygons(polygons);
+				Path filePath = fc.getSelectedFile().toPath();
+				drawPolygonsFromPath(filePath);
 			}
 		});
 
@@ -112,8 +155,7 @@ public class AutomaticNestingGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					AutomaticNestingGUI.this.width = Integer
-							.parseInt(widthEntry.getText());
+					AutomaticNestingGUI.this.setWidth(Integer.parseInt(widthEntry.getText()));
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(AutomaticNestingGUI.this,
 							"Width must be an integer!");
@@ -185,17 +227,54 @@ public class AutomaticNestingGUI extends JFrame {
 		widthEntry.setText(Integer.toString(width));
 	}
 	
+	public void setPolygonsPath(Path p) {
+		polygonsPath = p;
+	}
+	
+	public void parsePolygons() {
+		polygons = PolyFileParser.getPolygonsFromFile(polygonsPath.toFile());
+	}
+	
+	public void drawPolygonsFromPath(Path p) {
+		setPolygonsPath(p);
+		parsePolygons();
+		polygonDrawer.setPolygons(polygons);
+	}
+	
 	WindowListener settingsListener = new WindowListener() {
 		
 		@Override
 		public void windowOpened(WindowEvent e) {
-			setWidth(500);
+
+			try (Reader fileReader = Files.newBufferedReader(settingsPath, StandardCharsets.UTF_8)){
+				Gson gson = new Gson();
+				JsonObject settings = gson.fromJson(fileReader, JsonElement.class).getAsJsonObject();
+				if (settings.has("width")) {
+					setWidth(settings.get("width").getAsInt());
+				}
+				if (settings.has("polygonsPath")) {
+					drawPolygonsFromPath(
+						Paths.get(settings.get("polygonsPath").getAsString())
+					);
+				}
+			} catch (IOException ioex) {
+				System.out.println(ioex);
+			}
+			
 		}
 		
 		@Override
 		public void windowClosing(WindowEvent e) {
-			// TODO Auto-generated method stub
-			
+			GsonBuilder gb = new GsonBuilder();
+			gb.registerTypeAdapter(AutomaticNestingGUI.class, settingsSeriazlier);
+			Gson gson = gb.setPrettyPrinting().create();
+			try (BufferedWriter jsonWriter = Files.newBufferedWriter(
+					settingsPath, StandardCharsets.UTF_8))
+			{
+				jsonWriter.write(gson.toJson(AutomaticNestingGUI.this));
+			} catch (IOException ioex) {
+				ioex.printStackTrace();
+			}
 		}
 		
 		@Override
