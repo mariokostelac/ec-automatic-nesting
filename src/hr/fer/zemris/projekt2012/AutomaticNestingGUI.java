@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Polygon;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.List;
 
@@ -32,13 +34,20 @@ public class AutomaticNestingGUI extends JFrame {
 	private VisualizePolygons polygonDrawer;
 	private List<Polygon> polygons = null;
 
+	/**
+	 * area with, should be changed through setWidth method
+	 */
 	private int width = 400;
 	
 	final JButton algorithmStart = new JButton("Start");
+	final JTextField widthEntry = new JTextField(0);
 	
 	private Thread calculatingThread = new Thread();
 
 	public AutomaticNestingGUI() {
+		
+		this.addWindowListener(settingsListener);
+		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setLayout(
@@ -65,6 +74,8 @@ public class AutomaticNestingGUI extends JFrame {
 		leftComponents.setLayout(new BoxLayout(leftComponents,
 				BoxLayout.PAGE_AXIS));
 
+		setWidth(width);
+		
 		final JButton parseButton = new JButton();
 		parseButton.setAction(new AbstractAction() {
 
@@ -91,7 +102,6 @@ public class AutomaticNestingGUI extends JFrame {
 		polygonDrawer.setBackground(new Color(255, 255, 255));
 
 		final JLabel widthLabel = new JLabel("Set width (algorithm parameter)");
-		final JTextField widthEntry = new JTextField(Integer.toString(width));
 		widthEntry.setHorizontalAlignment(JTextField.RIGHT);
 
 		JButton widthSet = new JButton();
@@ -169,6 +179,40 @@ public class AutomaticNestingGUI extends JFrame {
 		this.getContentPane().add(leftComponents);
 		this.getContentPane().add(polygonDrawer);
 	}
+	
+	public void setWidth(int w) {
+		width = w;
+		widthEntry.setText(Integer.toString(width));
+	}
+	
+	WindowListener settingsListener = new WindowListener() {
+		
+		@Override
+		public void windowOpened(WindowEvent e) {
+			setWidth(500);
+		}
+		
+		@Override
+		public void windowClosing(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void windowClosed(WindowEvent e) {}
+		
+		@Override
+		public void windowActivated(WindowEvent e) {}
+
+		@Override
+		public void windowIconified(WindowEvent e) {}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {}
+	};
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
