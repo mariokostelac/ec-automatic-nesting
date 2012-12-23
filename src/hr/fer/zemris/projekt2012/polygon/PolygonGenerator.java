@@ -3,6 +3,9 @@ package hr.fer.zemris.projekt2012.polygon;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +17,7 @@ import java.util.Random;
  *
  */
 public class PolygonGenerator {
+	
 	private static Integer lower = 20;
 	private static Integer upper = 200;
 	private static Integer maxBrStr = 10;
@@ -117,10 +121,37 @@ public class PolygonGenerator {
 		return generate(b.nextInt(maxBrStr - 3 + 1) + 3);
 	}
 	
-	public static void main(String args[]) {
-		Polygon b = generate(4);
-		for(int i = 0; i < b.npoints; i++) {
-			System.out.println("(" + b.xpoints[i] + ", " + b.ypoints[i] + ")");
+	/*
+	 * Metoda koja prepisuje random poligone u .txt datoteku
+	 * @param number Broj generiranih poligona
+	 * @param location lokacija datoteke
+	 */
+	public static void toFile(String location, int number){
+		
+		PolygonGenerator.setUpper(100);
+		
+		try{
+			BufferedWriter out = new BufferedWriter(new FileWriter(location));
+			List<PolygonRandom> list = generateMany(number);
+			for(Polygon poly: list){
+				for(int i=0; i < poly.npoints; i++){
+					out.write("(" + poly.xpoints[i] + ", " + poly.ypoints[i] + ")");
+					if(i == poly.npoints-1)
+						out.write("#\n");
+					else
+						out.write(";");
+				}
+			}
+			out.close();
+		} catch(IOException e){
+			System.out.println("Greska u stvaranju datoteke!");
 		}
+	}
+	
+	
+	public static void main(String args[]) {
+		
+		toFile("polysets/izlaz.txt", 30);
+		
 	}
 }

@@ -33,7 +33,6 @@ public class AutomaticNestingGUI extends JFrame {
 	private List<Polygon> polygons = null;
 
 	private int width = 400;
-	//private int height;
 	
 	final JButton algorithmStart = new JButton("Start");
 	

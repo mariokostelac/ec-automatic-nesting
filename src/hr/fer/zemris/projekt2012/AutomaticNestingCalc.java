@@ -119,6 +119,7 @@ public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
 		for (Event currEvent : allEvents) {
 			if (currEvent.type == Event.eventType.OPEN) {
 				// otvori pravokutnik
+				System.out.println(bins.length);
 				bins[currEvent.x] += 1;
 				bins[currEvent.x+currEvent.poly.getBounds().width] -= 1; 
 			} else {
