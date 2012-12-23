@@ -97,6 +97,11 @@ public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
         state.getCrossover().addOperator(krizanje, genotype.getGenotypeId());
 	}
 	
+	/**
+	 * Smješta novi poligon tako da u startEvents dodaje OPEN event novog poligona
+	 * @param startEvents
+	 * @param polygonIndex
+	 */
 	private void placePolygon(Set<Event> startEvents, int polygonIndex) {
 		
 		Polygon newPoly = polygons.get(polygonIndex);
