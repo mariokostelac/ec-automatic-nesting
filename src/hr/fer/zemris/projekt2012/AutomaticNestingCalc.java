@@ -119,9 +119,8 @@ public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
 		for (Event currEvent : allEvents) {
 			if (currEvent.type == Event.eventType.OPEN) {
 				// otvori pravokutnik
-				System.out.println(bins.length);
 				bins[currEvent.x] += 1;
-				bins[currEvent.x+currEvent.poly.getBounds().width] -= 1; 
+				bins[currEvent.x+currEvent.poly.getBounds().width] -= 1;
 			} else {
 				// zatvori pravokutnik
 				bins[currEvent.x] -= 1;
@@ -129,7 +128,7 @@ public class AutomaticNestingCalc extends Algorithm implements IEvaluate {
 				// provjeri postoji li dovoljno mjesta za smjestiti novi pravokutnik
 				int zerosInRow = 0;
 				int currSum = 0;
-				for (int i = 0; i < bins.length; ++i) {
+				for (int i = 0; i < this.width; ++i) {
 					currSum += bins[i];
 					if (currSum == 0)
 						zerosInRow++;
