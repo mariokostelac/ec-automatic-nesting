@@ -1,7 +1,5 @@
 package hr.fer.zemris.projekt2012;
 
-import hr.fer.zemris.projekt2012.polygon.PolygonRandom;
-
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +21,13 @@ import ecf.genotype.permutation.PermutationMutInv;
 
 public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 
-	private List<PolygonRandom> polygons;
+	private List<Polygon> polygons;
 	private int width = 0;
 	
 	private State state = null;
 	private Genotype genotype = null;
 	
-	public BottomLeftAlgorithm(List<PolygonRandom> polygons, int width) {
+	public BottomLeftAlgorithm(List<Polygon> polygons, int width) {
 		this.polygons = polygons;
 		this.width = width;
 	}
@@ -49,9 +47,9 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 		state.run();
     }
 	
-	public List<PolygonRandom> getBestSolution() {
+	public List<Polygon> getBestSolution() {
 		
-		List<PolygonRandom> translatedPolygons = new ArrayList<>();
+		List<Polygon> translatedPolygons = new ArrayList<>();
 		
 		Deme currPopulation = state.getPopulation().getLocalDeme();
 		Individual bestSolution = null;
@@ -67,7 +65,7 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 			if (i == 1) continue;
 			Polygon translatedPoly = new Polygon(currEvent.poly.xpoints, currEvent.poly.ypoints, currEvent.poly.npoints);
 			translatedPoly.translate(currEvent.x, currEvent.y);
-			translatedPolygons.add(new PolygonRandom(translatedPoly));
+			translatedPolygons.add(translatedPoly);
 			System.out.println(currEvent.x + " " + currEvent.y);
 		}
 		

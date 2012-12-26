@@ -50,7 +50,7 @@ public class AutomaticNestingGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private VisualizePolygons polygonDrawer;
-	private List<PolygonRandom> polygons = null;
+	private List<Polygon> polygons = null;
 
 	/**
 	 * area with, should be changed through setWidth method
@@ -108,7 +108,7 @@ public class AutomaticNestingGUI extends JFrame {
 		initGUI();
 	}
 
-	public void drawPolygons(List<PolygonRandom> polygons) {
+	public void drawPolygons(List<Polygon> polygons) {
 		this.polygonDrawer.setPolygons(polygons);
 	}
 
@@ -180,7 +180,7 @@ public class AutomaticNestingGUI extends JFrame {
 					@Override
 					public void run() {
 						algorithmStart.setEnabled(false);
-						BottomLeftAlgorithm test = new BottomLeftAlgorithm(polygons, width);
+						Algorithm test = new BottomLeftAlgorithmHookeJeeves(polygons, width);
 						test.run();
 						
 						drawPolygons( test.getBestSolution() );

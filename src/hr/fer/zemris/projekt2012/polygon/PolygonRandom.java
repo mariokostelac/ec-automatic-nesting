@@ -4,6 +4,9 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 
+import math.geom2d.polygon.Polygons2D;
+import math.geom2d.polygon.SimplePolygon2D;
+
 /**
  * Razred PolygonRandom služi kako bi se baznom razredu Polygon pridružile
  * neke funkcionalnosti koje će nam trebati u ovom projektu.
@@ -15,20 +18,40 @@ public class PolygonRandom extends Polygon {
 	private static final long serialVersionUID = 1L;
 	
 	private Point center;
+	private SimplePolygon2D me;
 
 	public PolygonRandom(Polygon a) {
-		super(a.xpoints, a.ypoints, a.npoints);
+		super(a.xpoints, a.ypoints, a.npoints); 
+		me = createFromPolygon(a);
 		racunajSrediste();
 	}
 	
 	public PolygonRandom(Polygon a, Point center) {
 		super(a.xpoints, a.ypoints, a.npoints);
+		me = createFromPolygon(a);
 		this.center = center;
 	}
 
 	public PolygonRandom(int[] xpoints, int[] ypoints, int npoints) {
 		super(xpoints, ypoints, npoints);
+		me = createFromPoints(xpoints, ypoints);
 		racunajSrediste();
+	}
+	
+	private SimplePolygon2D createFromPoints(int[] xpoints, int[] ypoints) {
+		
+		double[] x = new double[xpoints.length];
+		double[] y = new double[xpoints.length];
+		for (int i = 0; i < xpoints.length; ++i) {
+			x[i] = xpoints[i];
+			y[i] = ypoints[i];
+		}
+		return new SimplePolygon2D(x, y);
+		
+	}
+	
+	private SimplePolygon2D createFromPolygon(Polygon p) {
+		return createFromPoints(p.xpoints, p.ypoints);
 	}
 	
 	/**
@@ -90,13 +113,9 @@ public class PolygonRandom extends Polygon {
 	 * @param p
 	 * @return true ako se sijeku, u suprotnom false
 	 */
-	public boolean intersectsWith(Polygon p) {
-
-		for (int i = 0; i < p.npoints; ++i)
-			if (this.contains(p.xpoints[i], p.ypoints[i]))
-				return true;
+	public boolean intersectsWith(PolygonRandom p) {
 		
-		return false;
+		return Polygons2D.intersection(me, p.me).edgeNumber() > 0;
 		
 	}
 	
