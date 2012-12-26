@@ -231,18 +231,18 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 	 */
 	private Event getStartEventHJ(Set<Event> startEvents, int polygonIndex, int x, int y) {
 		
-		/*PolygonRandom p = polygons[polygonIndex];
+		Polygon2D p = polygons[polygonIndex];
 		int xP[] = new int[]{x, y};
 		int xB[] = new int[]{x, y};
 		int xN[] = new int[]{x, y};
-		double D[] = new double[] { -p.getBounds().width/2, -p.getBounds().height/2 };
+		double D[] = new double[] { -p.boundingBox().getWidth()/2, -p.boundingBox().getHeight()/2 };
 		do {
 			xN = explore(startEvents, polygonIndex, xP, D);
 			if (povrsina(startEvents, polygonIndex, xN) < povrsina(startEvents, polygonIndex, xB)) {
 				xP[0] = 2*xN[0] - xB[0];
 				xP[1] = 2*xN[1] - xB[1];
 				xB[0] = xN[0];
-				xB[1] = xN[1];
+				xB[1] = xN[1]; 
 			} else {
 				D[0] /= 2;
 				D[1] /= 2;
@@ -251,11 +251,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			}
 		} while (Math.abs(D[0]) > 1 || Math.abs(D[1]) > 1);
 		
-		System.out.println(x +", " + y + "|"+ xB[0] + ", " + xB[1]);
-		if (povrsina(startEvents, polygonIndex, xB) == Double.MAX_VALUE)
-			return null;
-		
-		/**/
+		/*
 		int xB[] = new int[]{x, y};
 		int xN[] = new int[]{x, y};
 		int d = 100;
@@ -263,14 +259,14 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			xN[0] -= d;
 			double a = povrsina(startEvents, polygonIndex, xN);
 			double b = povrsina(startEvents, polygonIndex, xB); 
-			System.out.println(a+"|"+b+";d:"+d+";x:"+xN[0]);
-			if (a <= b) {
+			//System.out.println(a+"|"+b+";d:"+d+";x:"+xN[0]);
+			if (a < b) {
 				xB[0] = xN[0];
 			} else {
 				xN[0] = xB[0];
 				d /= 2;
 			}
-		} while (d != 0);
+		} while (d != 0);/**/
 		
 		return new Event((int) xB[0], (int) xB[1], Event.eventType.OPEN,
 			getTranslated(polygons[polygonIndex], xB[0], xB[1])
@@ -332,8 +328,6 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			Box2D r = currEvent.poly.boundingBox();
 			if (Polygons2D.intersection(currEvent.poly, newPolygon).edgeNumber() > 0)
 				return Double.MAX_VALUE;
-			//Box2D intersection = r.intersection(newPolygon.boundingBox());
-			//sum += Math.abs(intersection.getHeight()*intersection.getWidth());
 		}
 	
 		return (width*height)/sum;

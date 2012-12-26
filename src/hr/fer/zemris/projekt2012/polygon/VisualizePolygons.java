@@ -58,7 +58,7 @@ public class VisualizePolygons extends JPanel {
 			g2d.draw(p2.getBounds());
 			
 			String text = new Integer(i).toString();
-		    g.setColor(Color.black);
+		    g.setColor(Color.BLUE);
 		    Rectangle r = p.getBounds();
 		    g.drawString(text, r.x+r.width/2, r.y + r.height/2);
 		    ++i;
