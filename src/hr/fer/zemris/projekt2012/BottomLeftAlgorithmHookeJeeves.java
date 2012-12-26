@@ -264,7 +264,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			double a = povrsina(startEvents, polygonIndex, xN);
 			double b = povrsina(startEvents, polygonIndex, xB); 
 			System.out.println(a+"|"+b+";d:"+d+";x:"+xN[0]);
-			if (a < b) {
+			if (a <= b) {
 				xB[0] = xN[0];
 			} else {
 				xN[0] = xB[0];
@@ -327,14 +327,13 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		if (x[1] < 0)
 			return Double.MAX_VALUE;	
 		
-		// treba dodati sjecište trenutnog i svih ostalih (želimo nagraditi blizinu)
 		Polygon2D newPolygon = getTranslated(polygons[polyIndex], x[0], x[1]);
 		for (Event currEvent : events) {
 			Box2D r = currEvent.poly.boundingBox();
 			if (Polygons2D.intersection(currEvent.poly, newPolygon).edgeNumber() > 0)
 				return Double.MAX_VALUE;
-			Box2D intersection = r.intersection(newPolygon.boundingBox());
-			sum += (int)(intersection.getHeight()*intersection.getWidth());
+			//Box2D intersection = r.intersection(newPolygon.boundingBox());
+			//sum += Math.abs(intersection.getHeight()*intersection.getWidth());
 		}
 	
 		return (width*height)/sum;

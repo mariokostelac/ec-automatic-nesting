@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
@@ -45,6 +46,7 @@ public class VisualizePolygons extends JPanel {
 		Color outline = new Color(200, 10, 10);
 		Color inline = new Color(50, 50, 50);
 		
+		int i = 0;
 		for (Polygon p : polygons) {
 			AffineTransform scaleMatrix = new AffineTransform();
 			scaleMatrix.scale(this.xScale, this.yScale);
@@ -54,6 +56,12 @@ public class VisualizePolygons extends JPanel {
 			g2d.draw(p2);
 			g2d.setColor(outline);
 			g2d.draw(p2.getBounds());
+			
+			String text = new Integer(i).toString();
+		    g.setColor(Color.black);
+		    Rectangle r = p.getBounds();
+		    g.drawString(text, r.x+r.width/2, r.y + r.height/2);
+		    ++i;
 		}		
 
 	}
