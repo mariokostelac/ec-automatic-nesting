@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import hr.fer.zemris.projekt2012.parsers.PolyFileParser;
-import hr.fer.zemris.projekt2012.polygon.VisualizePolygons;
+import hr.fer.zemris.projekt2012.polygon.*;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -50,7 +50,7 @@ public class AutomaticNestingGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private VisualizePolygons polygonDrawer;
-	private List<Polygon> polygons = null;
+	private List<PolygonRandom> polygons = null;
 
 	/**
 	 * area with, should be changed through setWidth method
@@ -108,7 +108,7 @@ public class AutomaticNestingGUI extends JFrame {
 		initGUI();
 	}
 
-	public void drawPolygons(List<Polygon> polygons) {
+	public void drawPolygons(List<PolygonRandom> polygons) {
 		this.polygonDrawer.setPolygons(polygons);
 	}
 

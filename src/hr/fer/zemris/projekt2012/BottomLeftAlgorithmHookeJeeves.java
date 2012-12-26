@@ -21,7 +21,7 @@ import ecf.genotype.permutation.Permutation;
 import ecf.genotype.permutation.PermutationCrxPMX;
 import ecf.genotype.permutation.PermutationMutInv;
 
-public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
+public class BottomLeftAlgorithmHookeJeeves extends Algorithm implements IEvaluate {
 
 	private List<PolygonRandom> polygons;
 	private int width = 0;
@@ -29,7 +29,7 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 	private State state = null;
 	private Genotype genotype = null;
 	
-	public BottomLeftAlgorithm(List<PolygonRandom> polygons, int width) {
+	public BottomLeftAlgorithmHookeJeeves(List<PolygonRandom> polygons, int width) {
 		this.polygons = polygons;
 		this.width = width;
 	}
@@ -49,9 +49,9 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 		state.run();
     }
 	
-	public List<PolygonRandom> getBestSolution() {
+	public List<Polygon> getBestSolution() {
 		
-		List<PolygonRandom> translatedPolygons = new ArrayList<>();
+		List<Polygon> translatedPolygons = new ArrayList<>();
 		
 		Deme currPopulation = state.getPopulation().getLocalDeme();
 		Individual bestSolution = null;
@@ -67,7 +67,7 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 			if (i == 1) continue;
 			Polygon translatedPoly = new Polygon(currEvent.poly.xpoints, currEvent.poly.ypoints, currEvent.poly.npoints);
 			translatedPoly.translate(currEvent.x, currEvent.y);
-			translatedPolygons.add(new PolygonRandom(translatedPoly));
+			translatedPolygons.add(translatedPoly);
 			System.out.println(currEvent.x + " " + currEvent.y);
 		}
 		
@@ -100,7 +100,10 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 	}
 	
 	/**
-	 * Smješta novi poligon tako da u startEvents dodaje OPEN event novog poligona
+	 * Traži bottom left točku na koju može smjestiti novi poligon tako da najviše pola
+	 * okružujućeg pravokutnika viri van. Nakon toga se primjenjuje Hooke-Jeeves algoritam
+	 * za približavanje pravokutnika. U slučaju da nakon HJ-a pravokutnik i dalje viri van,
+	 * traženje se nastavlja.
 	 * @param startEvents
 	 * @param polygonIndex
 	 */
@@ -120,7 +123,8 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 		}
 		
 		// polje koje će za svaki pixel pamtiti počinje/završava li neki pravokutnik na tom pixelu
-		int bins[] = new int[this.width+1];
+		int phantomWidth = this.width + polygons.get(polygonIndex).getBounds().width/2;
+		int bins[] = new int[phantomWidth+1];
 
 		boolean added = false;
 		for (Event currEvent : allEvents) {
@@ -135,7 +139,7 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 				// provjeri postoji li dovoljno mjesta za smjestiti novi pravokutnik
 				int zerosInRow = 0;
 				int currSum = 0;
-				for (int i = 0; i < this.width; ++i) {
+				for (int i = 0; i < phantomWidth; ++i) {
 					currSum += bins[i];
 					if (currSum == 0)
 						zerosInRow++;
@@ -146,10 +150,10 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 						int x = i-zerosInRow+1;
 						int y = currEvent.y-polyHeight;
 						Event startEvent = new Event(
-								x,
-								y,
-								Event.eventType.OPEN,
-								newPoly
+							x,
+							y,
+							Event.eventType.OPEN,
+							newPoly
 						);
 						startEvents.add(startEvent);
 						added = true;
@@ -199,6 +203,19 @@ public class BottomLeftAlgorithm extends Algorithm implements IEvaluate {
 
 	@Override
 	public void initialize() {}
+	
+	/**
+	 * Pokušava pomaknuti dani poligon s točke x, y što više prema dolje i lijevo,
+	 * a da ne se poligon ne siječe s ostalim poligonima
+	 * @param polygonIndex polygon index
+	 * @param x x koordinata početne točke traženja
+	 * @param y y koordinate početne točke traženja
+	 * @return
+	 */
+	private Event getStartEventHJ(int polygonIndex, int x, int y) {
+		
+		return null;
+	}
 		
 	private static class Event implements Comparable<Event> {
 		

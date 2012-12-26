@@ -15,7 +15,7 @@ public class VisualizePolygons extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Polygon> polygons = new LinkedList<>();
+	private List<PolygonRandom> polygons = new LinkedList<>();
 
 	private float xScale = 1;
 	private float yScale = 1;
@@ -28,9 +28,9 @@ public class VisualizePolygons extends JPanel {
 		this.yScale = yScale;
 	}
 
-	public void setPolygons(List<Polygon> list) {
+	public void setPolygons(List<PolygonRandom> list) {
 		this.polygons = new LinkedList<>();
-		for (Polygon poly : list) {
+		for (PolygonRandom poly : list) {
 			polygons.add(poly);
 		}
 		this.paintComponent(getGraphics());

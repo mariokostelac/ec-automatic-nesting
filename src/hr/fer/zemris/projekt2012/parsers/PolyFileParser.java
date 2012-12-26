@@ -1,5 +1,7 @@
 package hr.fer.zemris.projekt2012.parsers;
 
+import hr.fer.zemris.projekt2012.polygon.PolygonRandom;
+
 import java.awt.Polygon;
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,9 +13,9 @@ import java.util.List;
 
 public class PolyFileParser {
 		
-	public static List<Polygon> getPolygonsFromFile( File file ) {
+	public static List<PolygonRandom> getPolygonsFromFile( File file ) {
 		
-		List<Polygon> polygons = new ArrayList<>();
+		List<PolygonRandom> polygons = new ArrayList<>();
 		
 		try ( BufferedReader fReader = new BufferedReader(new FileReader(file)) ) {
 			String currLine;
@@ -27,7 +29,7 @@ public class PolyFileParser {
 						String coords[] = point.split("\\s*,\\s*");
 						currPolygon.addPoint(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
 					}
-					polygons.add(currPolygon);
+					polygons.add(new PolygonRandom(currPolygon));
 				}
 			}
 			

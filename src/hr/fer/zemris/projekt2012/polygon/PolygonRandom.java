@@ -11,6 +11,7 @@ import java.awt.Rectangle;
  *
  */
 public class PolygonRandom extends Polygon {
+	
 	private static final long serialVersionUID = 1L;
 	
 	private Point center;
@@ -83,4 +84,20 @@ public class PolygonRandom extends Polygon {
 		Rectangle b = new Polygon(xpoints, ypoints, npoints).getBounds();
 		translate(-b.x, -b.y);
 	}
+	
+	/**
+	 * Otkriva siječe li se poligon s danim poligonom p
+	 * @param p
+	 * @return true ako se sijeku, u suprotnom false
+	 */
+	public boolean intersectsWith(Polygon p) {
+
+		for (int i = 0; i < p.npoints; ++i)
+			if (this.contains(p.xpoints[i], p.ypoints[i]))
+				return true;
+		
+		return false;
+		
+	}
+	
 }
