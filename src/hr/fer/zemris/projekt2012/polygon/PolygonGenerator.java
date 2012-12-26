@@ -151,7 +151,7 @@ public class PolygonGenerator {
 	
 	public static void main(String args[]) {
 		
-		toFile("polysets/izlaz.txt", 30);
+		toFile("polysets/izlaz.txt", 20);
 		
 	}
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import math.geom2d.AffineTransform2D;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.polygon.Polygon2D;
@@ -128,7 +127,6 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		
 		Polygon2D newPoly = polygons[polygonIndex];
 		System.out.println(polygonIndex);
-		System.out.println(polygons[polygonIndex]);
 		int polyWidth = (int) newPoly.boundingBox().getWidth();
 		int polyHeight = (int) newPoly.boundingBox().getHeight();
 		Set<Event> allEvents = new TreeSet<>(startEvents);
@@ -145,7 +143,6 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		int phantomWidth = this.width;
 		int bins[] = new int[phantomWidth+1];
 
-		System.out.println(bins.length);
 		boolean added = false;
 		for (Event currEvent : allEvents) {
 			Box2D boundary = currEvent.poly.boundingBox();
@@ -261,12 +258,12 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		/**/
 		int xB[] = new int[]{x, y};
 		int xN[] = new int[]{x, y};
-		int d = -100;
+		int d = 100;
 		do {
 			xN[0] -= d;
 			double a = povrsina(startEvents, polygonIndex, xN);
 			double b = povrsina(startEvents, polygonIndex, xB); 
-			System.out.println(a+"|"+b+";d:"+d);
+			System.out.println(a+"|"+b+";d:"+d+";x:"+xN[0]);
 			if (a < b) {
 				xB[0] = xN[0];
 			} else {
@@ -276,7 +273,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		} while (d != 0);
 		
 		return new Event((int) xB[0], (int) xB[1], Event.eventType.OPEN,
-				getTranslated(polygons[polygonIndex], xB[0], xB[1])
+			getTranslated(polygons[polygonIndex], xB[0], xB[1])
 		);
 	}
 	
