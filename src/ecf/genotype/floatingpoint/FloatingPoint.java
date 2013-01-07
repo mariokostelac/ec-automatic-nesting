@@ -21,6 +21,8 @@ public class FloatingPoint extends Genotype{
     private Vector<Double> data;
     protected double minValue;
     protected double maxValue;
+    boolean minValueCustom = false;
+    boolean maxValueCustom = false;
 
     public FloatingPoint(State state) {
         this(state, 0);
@@ -34,16 +36,29 @@ public class FloatingPoint extends Genotype{
         data.setSize(dimension);
     }
     
+    public FloatingPoint(State state, int dimension, double min, double max) {
+        super(state, "FloatingPoint");
+        
+        nDimension = dimension;
+        data = new Vector<Double>();
+        data.setSize(dimension);
+        setMinValue(min);
+        setMaxValue(max);
+    }
+    
     @Override
     public void initialize() {
         Random random = state.getRandomizer();
-        minValue = Double.parseDouble(getParameterValue("lbound"));
-        maxValue = Double.parseDouble(getParameterValue("ubound"));
+        /*if (minValueCustom == false)
+        	minValue = Double.parseDouble(getParameterValue("lbound"));
+        if (maxValueCustom == false)
+        	maxValue = Double.parseDouble(getParameterValue("ubound"));/**/
         if (minValue >= maxValue) {
             state.getLogger().log(1, "Error: 'lbound' must be smaller than 'ubound' for FloatingPoint genotype!");
             return;
         }
-        nDimension = Integer.parseInt(getParameterValue("dimension"));
+        if (nDimension <= 0)
+        	nDimension = Integer.parseInt(getParameterValue("dimension"));
         if(nDimension < 1){
             state.getLogger().log(1, "Error: 'dimension' must be > 0 for FloatingPoint genotype!");
             return;
@@ -150,6 +165,16 @@ public class FloatingPoint extends Genotype{
      */
     public double getMinValue() {
         return minValue;
+    }
+    
+    public void setMinValue(double min) {
+    	minValueCustom = true;
+        minValue = min;
+    }
+    
+    public void setMaxValue(double max) {
+    	maxValueCustom = true;
+        maxValue = max;
     }
 
     @Override

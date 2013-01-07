@@ -180,7 +180,7 @@ public class AutomaticNestingGUI extends JFrame {
 					@Override
 					public void run() {
 						algorithmStart.setEnabled(false);
-						Algorithm test = new BottomLeftAlgorithmHookeJeeves(polygons, width);
+						Algorithm test = new BottomLeftAlgorithmHookeJeevesWithRotation(polygons, width);
 						test.run();
 						
 						drawPolygons( test.getBestSolution() );

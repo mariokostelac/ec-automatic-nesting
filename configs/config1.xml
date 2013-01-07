@@ -1,11 +1,4 @@
 <ECF>
-	<Genotype>
-		<Permutation>
-			<Entry key="size">5</Entry>
-			<Entry key="mut.inv">0.1</Entry>
-			<Entry key="crx.PMX">1</Entry>
-		</Permutation>
-	</Genotype>
 	<Algorithm>	<!-- moze biti samo jedan, ali ovdje su navedeni svi postojeci -->
         <SteadyStateTournament>
 			<Entry key="tsize">3</Entry> <!-- tournament size -->
