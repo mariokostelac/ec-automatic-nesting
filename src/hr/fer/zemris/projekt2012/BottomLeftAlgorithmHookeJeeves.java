@@ -1,7 +1,6 @@
 package hr.fer.zemris.projekt2012;
 
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 	
 	private State state = null;
 	private Genotype genotype = null;
-	
+		
 	public BottomLeftAlgorithmHookeJeeves(List<Polygon> polygons, int width) {
 		// kopiraj poligone (kako bi u ostatku programa ostali u izvornom obliku)
 		this.polygons = new Polygon2D[polygons.size()];
@@ -40,7 +39,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		for (Polygon p : polygons) {
 			double[] xcoords = new double[p.npoints];
 			double[] ycoords = new double[p.npoints];
-			for (int j = 0; j < p.npoints; ++j) {
+			for (int j = 0; j  < p.npoints; ++j) {
 				xcoords[j] = p.xpoints[j];
 				ycoords[j] = p.ypoints[j];
 			}
@@ -60,13 +59,14 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		setGenotype();
 		setMutation();
 		setCrossover();
-		
+				
 		state.initialize(args);
 		state.run();
+		
     }
 	
 	public List<Polygon> getBestSolution() {
-		
+				
 		List<Polygon> translatedPolygons = new ArrayList<>();
 		
 		Deme currPopulation = state.getPopulation().getLocalDeme();
@@ -126,7 +126,6 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 	private void placePolygon(Set<Event> startEvents, int polygonIndex) {
 		
 		Polygon2D newPoly = polygons[polygonIndex];
-		System.out.println(polygonIndex);
 		int polyWidth = (int) newPoly.boundingBox().getWidth();
 		int polyHeight = (int) newPoly.boundingBox().getHeight();
 		Set<Event> allEvents = new TreeSet<>(startEvents);
@@ -180,7 +179,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			}
 			
 		}
-		
+				
 	}
 
 	@Override
@@ -230,12 +229,12 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 	 * @return Event Open na ciljnoj lokaciji s translatiranim poligonom
 	 */
 	private Event getStartEventHJ(Set<Event> startEvents, int polygonIndex, int x, int y) {
-		
+						
 		Polygon2D p = polygons[polygonIndex];
 		int xP[] = new int[]{x, y};
 		int xB[] = new int[]{x, y};
 		int xN[] = new int[]{x, y};
-		double D[] = new double[] { -p.boundingBox().getWidth()/2, -p.boundingBox().getHeight()/2 };
+		int D[] = new int[] { (int)-p.boundingBox().getWidth()/2, (int)-p.boundingBox().getHeight()/2 };
 		do {
 			xN = explore(startEvents, polygonIndex, xP, D);
 			if (povrsina(startEvents, polygonIndex, xN) < povrsina(startEvents, polygonIndex, xB)) {
@@ -250,33 +249,16 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 				xP[1] = xB[1];
 			}
 		} while (Math.abs(D[0]) > 1 || Math.abs(D[1]) > 1);
-		
-		/*
-		int xB[] = new int[]{x, y};
-		int xN[] = new int[]{x, y};
-		int d = 100;
-		do {
-			xN[0] -= d;
-			double a = povrsina(startEvents, polygonIndex, xN);
-			double b = povrsina(startEvents, polygonIndex, xB); 
-			//System.out.println(a+"|"+b+";d:"+d+";x:"+xN[0]);
-			if (a < b) {
-				xB[0] = xN[0];
-			} else {
-				xN[0] = xB[0];
-				d /= 2;
-			}
-		} while (d != 0);/**/
-		
+				
 		return new Event((int) xB[0], (int) xB[1], Event.eventType.OPEN,
 			getTranslated(polygons[polygonIndex], xB[0], xB[1])
 		);
 	}
 	
-	private int[] explore(Set<Event> events, int polygonIndex, int[] xP, double[] D) {
-		
+	private int[] explore(Set<Event> events, int polygonIndex, int[] xP, int[] D) {
+			
 		int[] x = new int[]{xP[0], xP[1]};
-		double P, N;
+		double P, N = 0;
 		for (int i = 0; i < x.length; ++i) {
 			P = povrsina(events, polygonIndex, x);
 			x[i] += D[i];
@@ -290,6 +272,15 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 					x[i] += D[i];
 			}
 		}
+		
+		/*StringBuilder sb = new StringBuilder();
+		sb.append(polygonIndex).append(" - ");
+		sb.append("[");
+		sb.append(x[0]).append(",").append(x[1]).append(";");
+		sb.append("]");
+		sb.append(D[0]).append(",").append(D[1]);
+		sb.append(" | N = ").append(N);
+		//logger.log(0, sb.toString());/**/
 		
 		return x;
 		
@@ -305,7 +296,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 	 * @return
 	 */
 	private double povrsina(Set<Event> events, int polyIndex, int[] x) {
-
+		
 		double height = 0;
 		double sum = 0;
 		for (Event currEvent : events) {
@@ -328,8 +319,9 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			Box2D r = currEvent.poly.boundingBox();
 			if (Polygons2D.intersection(currEvent.poly, newPolygon).edgeNumber() > 0)
 				return Double.MAX_VALUE;
+			sum += rectangleIntersection(r, newPolygon.boundingBox());
 		}
-	
+			
 		return (width*height)/sum;
 
 	}
@@ -339,7 +331,7 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 	 * @param r2 pravokutnik 2
 	 * @return površina presjeka dvaju pravokutnika
 	 */
-	private static int rectangleIntersection(Rectangle r1, Rectangle r2) {
+	private int rectangleIntersection(Box2D r1, Box2D r2) {
 	
 		int minX = (int) Math.min(r1.getMinX(), r2.getMinX());
 		int maxX = (int) Math.max(r1.getMaxX(), r2.getMaxX());
@@ -348,10 +340,15 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 		int bigX = maxX - minX;
 		int bigY = maxY - minY;
 				
-		int smallX = r1.width+r2.width - bigX;
-		int smallY = r1.height+r2.height - bigY;
+		int smallX = (int)r1.getWidth()+(int)r2.getWidth() - bigX;
+		int smallY = (int)r1.getHeight()+(int)r2.getHeight() - bigY;
 		
-		return smallX * smallY;
+		if (smallX <= 0 || smallY <= 0)
+			return 0;
+		
+		int ret = smallX*smallY;
+		
+		return Math.max(0, ret);
 					
 	}
 	
