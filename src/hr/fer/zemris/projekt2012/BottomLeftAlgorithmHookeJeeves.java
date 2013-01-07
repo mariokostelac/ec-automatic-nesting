@@ -273,15 +273,6 @@ public class BottomLeftAlgorithmHookeJeeves extends Algorithm {
 			}
 		}
 		
-		/*StringBuilder sb = new StringBuilder();
-		sb.append(polygonIndex).append(" - ");
-		sb.append("[");
-		sb.append(x[0]).append(",").append(x[1]).append(";");
-		sb.append("]");
-		sb.append(D[0]).append(",").append(D[1]);
-		sb.append(" | N = ").append(N);
-		//logger.log(0, sb.toString());/**/
-		
 		return x;
 		
 	}
